@@ -4,21 +4,22 @@ import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import runtime.Handler;
+import runtime.Scene;
 
 /**
  * creates loading screens
  * @author Pascal
  *
  */
-public class LoadingScreen {
+public class LoadingScreen extends Scene{
 	
 	private int loadProgress;
 	private final int MAXLOAD;
 	private String displayText;
 	private String tip;
-	Rect back;
-	Rect bar;
-	Rect load;
+	private Rect back;
+	private Rect bar;
+	private Rect load;
 	
 	/**
 	 * creates and displays a loading screen which will have a load bar with a set number of increments
@@ -29,9 +30,9 @@ public class LoadingScreen {
 		displayText = "";
 		Handler.setFPSCap(false);
 		
-		back = new Rect(Handler.getWidth(), Handler.getHeight(), 0xff333333, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
-		bar = new Rect(300, 20, 0xff000000, Sprite.TYPE_GUI_FOREGROUND_SHAPE);
-		load = new Rect(1, 16, 0xff990000, Sprite.TYPE_GUI_FOREGROUND_SHAPE);
+		back = new Rect(Handler.getWidth(), Handler.getHeight(), 0xff333333, Sprite.createLightData(0, 0));
+		bar = new Rect(300, 20, 0xff000000, Sprite.createLightData(0, 0));
+		load = new Rect(1, 16, 0xff990000, Sprite.createLightData(0, 0));
 		
 		Handler.setLoadingScreen(this);
 	}
@@ -72,6 +73,18 @@ public class LoadingScreen {
 	 */
 	public void displayText(String text) {
 		this.displayText = text;
+	}
+
+	@Override
+	public void init(String data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

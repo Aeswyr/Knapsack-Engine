@@ -2,6 +2,7 @@ package runtime;
 
 import core.Driver;
 import core.Screen;
+import entity.EntityManager;
 import entity.Vector;
 import gfx.DrawGraphics;
 import gui.InterfaceManager;
@@ -19,7 +20,7 @@ import utility.LoadingScreen;
  */
 public class Handler {
 
-	private static State activeState;
+	private static Scene activeScene;
 
 	public static boolean devMode = false;
 
@@ -29,6 +30,7 @@ public class Handler {
 
 	private static LightManager lightManager;
 	private static ParticleManager particles;
+	private static EntityManager entities;
 
 	private static InterfaceManager uiManager;
 
@@ -36,6 +38,7 @@ public class Handler {
 
 	/**
 	 * initialies the driver and all its components
+	 * 
 	 * @param d - the main game driver
 	 */
 	public static void init(Driver d) {
@@ -44,7 +47,7 @@ public class Handler {
 		lightManager = new LightManager();
 		particles = new ParticleManager();
 		uiManager = new InterfaceManager();
-
+		entities = new EntityManager();
 		camera = new Camera();
 
 		d.setControls(new Controller());
@@ -53,18 +56,20 @@ public class Handler {
 
 	public static void update() {
 		Controller.update();
-		activeState.update();
+		if (activeScene != null)
+			activeScene.update();
 	}
 
 	/**
 	 * draws all components of the currently active state
+	 * 
 	 * @param g - the DrawGraphics component associated with the renderer
 	 */
 	public static void render(DrawGraphics g) {
 		if (loadingScreen != null)
 			loadingScreen.render(g);
-		else
-			activeState.render(g);
+		else if (activeScene != null)
+			activeScene.render(g);
 
 	}
 
@@ -108,14 +113,14 @@ public class Handler {
 	/**
 	 * @returns the LightManager
 	 */
-	public static LightManager getLights() {
+	public static LightManager getLightManager() {
 		return lightManager;
 	}
 
 	/**
 	 * @returns the ParticleManager
 	 */
-	public static ParticleManager getParticles() {
+	public static ParticleManager getParticleManager() {
 		return particles;
 	}
 
@@ -127,7 +132,8 @@ public class Handler {
 	}
 
 	/**
-	 * sets the capped condition of the renderer 
+	 * sets the capped condition of the renderer
+	 * 
 	 * @param capped - true to cap the fps at 60, false to uncap fps
 	 */
 	public static void setFPSCap(boolean capped) {
@@ -136,6 +142,7 @@ public class Handler {
 
 	/**
 	 * sets the currently active loading screen
+	 * 
 	 * @param l - the new loading screen
 	 */
 	public static void setLoadingScreen(LoadingScreen l) {
@@ -150,10 +157,36 @@ public class Handler {
 	}
 
 	/**
-	 * sets the currently active state
-	 * @param state - the new state
+	 * sets the currently active scene
+	 * 
+	 * @param scene - the new scene
 	 */
-	public static void setState(State state) {
-		activeState = state;
+	public static void setScene(Scene scene) {
+		activeScene = scene;
+	}
+
+	/**
+	 * sets the currently active scene, and initializes it
+	 * 
+	 * @param scene - the new scene
+	 * @param data  - any data associated with the scene start
+	 */
+	public static void startScene(Scene scene, String data) {
+		scene.init(data);
+		activeScene = scene;
+	}
+
+	/**
+	 * sets the currently active scene, and initializes it
+	 * 
+	 * @param scene - the new scene
+	 */
+	public static void startScene(Scene scene) {
+		scene.init(null);
+		activeScene = scene;
+	}
+
+	public static EntityManager getEntityManager() {
+		return entities;
 	}
 }

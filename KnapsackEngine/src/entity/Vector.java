@@ -75,10 +75,22 @@ public class Vector implements Serializable {
 				else
 					Vy = 0;
 			}
+			
+			
+			
 
 			Ax = 0;
 			Ay = 0;
 		}
+		
+		if (linked.hasHitbox()) {
+			
+		} else {
+			linked.setX((int) (linked.getX() + Vx));
+			linked.setY((int) (linked.getY() + Vy));
+		}
+		
+
 	}
 
 	/**

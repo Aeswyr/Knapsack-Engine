@@ -24,14 +24,20 @@ public class Camera {
 	 */
 	public void update() {
 		if (target != null) {
-
 			xOffset += (target.getX() - xOffset) / 4;
 			yOffset += (target.getY() - yOffset) / 4;
-			if (xOffset < w / 2 - w / 6)
-				xOffset = w / 2 - w / 6;
-			if (yOffset < h / 2)
-				yOffset = h / 2;
 		}
+	}
+	
+	/**
+	 * centers the camera on the specified point until it is moved or reassigned an entity target
+	 * @param x - x position to center on
+	 * @param y - y position to center on
+	 */
+	public void center(int x, int y) {
+		xOffset = (x);
+		yOffset = (y);
+		target = null;
 	}
 
 	/**

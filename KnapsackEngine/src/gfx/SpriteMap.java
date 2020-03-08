@@ -8,7 +8,7 @@ package gfx;
  * @author Pascal
  *
  */
-public class SpriteSet {
+public class SpriteMap {
 
 	protected Sprite[] sprites;
 	
@@ -22,7 +22,7 @@ public class SpriteSet {
 	 * @param size  - width of set in cells
 	 * @param height - height of set in cells
 	 */
-	public SpriteSet(int x, int y, int cell, int size, SpriteSheet sheet) {
+	public SpriteMap(int x, int y, int cell, int size, SpriteSheet sheet) {
 		sprites = new Sprite[size * size];
 		for (int j = 0; j < size; j++) {
 			for (int i = 0; i < size; i++) {

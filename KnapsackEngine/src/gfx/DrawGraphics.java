@@ -35,6 +35,8 @@ public class DrawGraphics {
 
 	private Font font;
 
+	boolean lightingEnabled = false;
+
 	public DrawGraphics(Driver d) {
 		width = 960;
 		height = 540;
@@ -59,11 +61,12 @@ public class DrawGraphics {
 	 * @param g - the Graphics object associated with the canvas
 	 */
 	public void render(Graphics g) {
-		for (int i = 0; i < raster.length; i++) {
-			raster[i] = (int) (((raster[i] >> 16) & 0xff) * (((lightMap[i] >> 16) & 0xff) / 255f)) << 16
-					| (int) (((raster[i] >> 8) & 0xff) * (((lightMap[i] >> 8) & 0xff) / 255f)) << 8
-					| (int) ((raster[i] & 0xff) * ((lightMap[i] & 0xff) / 255f));
-		}
+		if (lightingEnabled)
+			for (int i = 0; i < raster.length; i++) {
+				raster[i] = (int) (((raster[i] >> 16) & 0xff) * (((lightMap[i] >> 16) & 0xff) / 255f)) << 16
+						| (int) (((raster[i] >> 8) & 0xff) * (((lightMap[i] >> 8) & 0xff) / 255f)) << 8
+						| (int) ((raster[i] & 0xff) * ((lightMap[i] & 0xff) / 255f));
+			}
 
 		g.drawImage(screen, 0, 0, fullWidth, fullHeight, null);
 	}
@@ -122,6 +125,14 @@ public class DrawGraphics {
 		}
 		requestList.clear();
 		lightRequest.clear();
+	}
+
+	public void processgl() {
+
+	}
+
+	public void rendergl() {
+
 	}
 
 	/**
@@ -638,13 +649,31 @@ public class DrawGraphics {
 
 		}
 	}
-	
+
 	/**
 	 * sets the currently active font
+	 * 
 	 * @param f - the font to use
 	 */
 	public void setFont(Font f) {
 		this.font = f;
 	}
 
+	/**
+	 * Sets the color for darkness, the normal lighting level
+	 * 
+	 * @param colorHex - color hex desired for ambient light
+	 */
+	public void setAmbientLightColor(int colorHex) {
+		this.ambientColor = colorHex;
+	}
+
+	/**
+	 * Enables or disables lighting
+	 * 
+	 * @param light - sets the lighting, true for enabled, false for disabled
+	 */
+	public void setLightingEnabled(boolean light) {
+		this.lightingEnabled = light;
+	}
 }

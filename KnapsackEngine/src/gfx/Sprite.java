@@ -17,30 +17,19 @@ public class Sprite implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2743802919702462394L;
-	public static final int TYPE_ENTITY = 0;
-	public static final int TYPE_GUI_COMPONENT = 1;
-	public static final int TYPE_INVENTORY_ITEM = 2;
-	public static final int TYPE_GUI_FOREGROUND_SHAPE = 3;
-	public static final int TYPE_GUI_BACKGROUND_SHAPE = 4;
-	public static final int TYPE_GUI_ITEM_SHAPE = 5;
-	public static final int TYPE_ITEM_DROP = 6;
-	public static final int TYPE_FLOOR = 7;
-	public static final int TYPE_WALL = 8;
-	public static final int TYPE_CEILING = 9;
-	public static final int TYPE_TEXT = 10;
 
-	int lightInteraction = Light.NONE;
+	int lightInteraction = Light.IGNORE;
+	int priority = 0;
 
 	int[][] raw;
 	int width, height;
 
 	int xOff, yOff;
-	int priority = 0;
+	
 
 	int frames;
 	long delta, lastTime;
 
-	int type;
 
 	/**
 	 * Loads a sprite using a buffered image
@@ -275,7 +264,7 @@ public class Sprite implements Serializable {
 
 			}
 		}
-		return new Sprite(width * scale, height * scale, r, type);
+		return new Sprite(width * scale, height * scale, r, createLightData(priority, lightInteraction));
 	}
 
 	/**
@@ -297,7 +286,7 @@ public class Sprite implements Serializable {
 				r0[i] = c;
 		}
 
-		return new Sprite(width, height, r0, type);
+		return new Sprite(width, height, r0, createLightData(priority, lightInteraction));
 	}
 
 	/**
@@ -332,7 +321,7 @@ public class Sprite implements Serializable {
 			}
 		}
 
-		return new Sprite(width, height, r0, type);
+		return new Sprite(width, height, r0, createLightData(priority, lightInteraction));
 	}
 
 	/**
@@ -360,8 +349,8 @@ public class Sprite implements Serializable {
 			}
 		}
 
-		Sprite[] s = { new Sprite(width, height, r, type), new Sprite(width, height, g, type),
-				new Sprite(width, height, b, type) };
+		Sprite[] s = { new Sprite(width, height, r, createLightData(priority, lightInteraction)), new Sprite(width, height, g, createLightData(priority, lightInteraction)),
+				new Sprite(width, height, b, createLightData(priority, lightInteraction)) };
 		return s;
 	}
 
@@ -394,8 +383,8 @@ public class Sprite implements Serializable {
 			}
 		}
 
-		Sprite[] s = { new Sprite(width, height, r, type), new Sprite(width, height, g, type),
-				new Sprite(width, height, b, type) };
+		Sprite[] s = { new Sprite(width, height, r, createLightData(priority, lightInteraction)), new Sprite(width, height, g, createLightData(priority, lightInteraction)),
+				new Sprite(width, height, b, createLightData(priority, lightInteraction)) };
 		return s;
 	}
 
@@ -451,53 +440,15 @@ public class Sprite implements Serializable {
 	 * @param type - an input sprite type
 	 */
 	public void settings(int type) {
-		this.type = type;
-		switch (type) {
-		case TYPE_GUI_COMPONENT:
-			lightInteraction = Light.IGNORE;
-			priority = 108;
-			break;
-		case TYPE_INVENTORY_ITEM:
-			lightInteraction = Light.IGNORE;
-			priority = 1010;
-			break;
-		case TYPE_GUI_BACKGROUND_SHAPE:
-			lightInteraction = Light.IGNORE;
-			priority = 107;
-			break;
-		case TYPE_GUI_FOREGROUND_SHAPE:
-			lightInteraction = Light.IGNORE;
-			priority = 109;
-			break;
-		case TYPE_GUI_ITEM_SHAPE:
-			lightInteraction = Light.IGNORE;
-			priority = 1011;
-			break;
-		case TYPE_ITEM_DROP:
-			lightInteraction = Light.NONE;
-			priority = 1;
-			break;
-		case TYPE_ENTITY:
-			lightInteraction = Light.NONE;
-			priority = 1;
-			break;
-		case TYPE_FLOOR:
-			lightInteraction = Light.NONE;
-			priority = 0;
-			break;
-		case TYPE_WALL:
-			lightInteraction = Light.NONE;
-			priority = 0;
-			break;
-		case TYPE_CEILING:
-			lightInteraction = Light.DIM;
-			priority = 2;
-			break;
-		case TYPE_TEXT:
-			lightInteraction = Light.IGNORE;
-			priority = 1012;
-		default:
-			break;
-		}
+		this.lightInteraction = type & 0x00000003;
+		this.priority = type >> 2;
 	}
+	
+	public static int createLightData(int renderPriority, int lightInteraction) {
+		
+		return (renderPriority << 2) | (lightInteraction & 0x00000003);
+	}
+	
+	
+	
 }

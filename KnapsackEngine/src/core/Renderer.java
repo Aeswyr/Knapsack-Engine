@@ -1,5 +1,7 @@
 package core;
 
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
@@ -14,6 +16,7 @@ import runtime.Handler;
  */
 public class Renderer implements Runnable {
 
+	protected static boolean openglEnabled = false;
 	private boolean running = false;
 	private int ticks;
 	private boolean capped = true;
@@ -37,7 +40,10 @@ public class Renderer implements Runnable {
 			currentTime = System.nanoTime();
 			if (currentTime - lastTime > delta) {
 				if (ticks > 0 || !capped) {
-					render();
+					if (openglEnabled)
+						rendergl();
+					else
+						render();
 					frames++;
 
 					if (capped)
@@ -84,8 +90,19 @@ public class Renderer implements Runnable {
 		g.dispose();
 	}
 
+	public void rendergl() {
+
+		glfwPollEvents();
+		
+		Handler.render(draw);
+		draw.processgl();
+		draw.rendergl();
+		
+	}
+
 	/**
-	 * increments the number of ticks that the update method has been running ahead of the render method
+	 * increments the number of ticks that the update method has been running ahead
+	 * of the render method
 	 */
 	public void tick() {
 		ticks++;
@@ -93,6 +110,7 @@ public class Renderer implements Runnable {
 
 	/**
 	 * sets whether or not to cap fps
+	 * 
 	 * @param capped - true to cap fps, false to uncap
 	 */
 	protected void setCapped(boolean capped) {
@@ -100,7 +118,9 @@ public class Renderer implements Runnable {
 	}
 
 	/**
-	 * gets the number of times the renderer has run since the last call to getFrames()
+	 * gets the number of times the renderer has run since the last call to
+	 * getFrames()
+	 * 
 	 * @returns the integer number of frames since the last call to this method
 	 */
 	protected int getFrames() {

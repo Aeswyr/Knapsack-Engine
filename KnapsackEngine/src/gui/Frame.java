@@ -27,10 +27,12 @@ public class Frame extends UIObject {
 		this.x = x;
 		this.y = y;
 
+		
+		//TODO ui scripting system to set up sprite data correctly
 		if (color != border)
-			frame = new Rect(width, height, color, border, Sprite.TYPE_GUI_BACKGROUND_SHAPE).toSprite();
+			frame = new Rect(width, height, color, border, Sprite.createLightData(0, 0)).toSprite();
 		else
-			frame = new Rect(width, height, color, Sprite.TYPE_GUI_BACKGROUND_SHAPE).toSprite();
+			frame = new Rect(width, height, color, Sprite.createLightData(0, 0)).toSprite();
 	}
 
 	/**

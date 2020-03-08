@@ -34,7 +34,9 @@ public class Button extends UIObject {
 	 */
 	public Button(ClickListener action, int x, int y, int width, int height) {
 		this.action = action;
-		hitbox = new Hitbox(x, y, width, height);
+
+		hitbox = new Hitbox(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
+		
 		this.x = x;
 		this.y = y;
 	}
@@ -54,12 +56,15 @@ public class Button extends UIObject {
 	public Button(ClickListener action, int x, int y, int width, int height, int color1, int color2) {
 		visible = true;
 		this.action = action;
-		hitbox = new Hitbox(x, y, width, height);
+		
+		hitbox = new Hitbox(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
+		
 		this.x = x;
 		this.y = y;
 
-		base = new Rect(width, height, color1, 0xffffffff, Sprite.TYPE_GUI_COMPONENT).toSprite();
-		hover = new Rect(width, height, color2, 0xffffffff, Sprite.TYPE_GUI_COMPONENT).toSprite();
+		//TODO ui scripting system to set up sprite data correctly
+		base = new Rect(width, height, color1, 0xffffffff, Sprite.createLightData(0, 0)).toSprite();
+		hover = new Rect(width, height, color2, 0xffffffff, Sprite.createLightData(0, 0)).toSprite();
 	}
 
 	/**
@@ -77,14 +82,16 @@ public class Button extends UIObject {
 	public Button(String text, ClickListener action, int x, int y, int width, int height, int color1, int color2) {
 		visible = true;
 		this.action = action;
-		hitbox = new Hitbox(x, y, width, height);
+
+		hitbox = new Hitbox(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
+		
 		this.x = x;
 		this.y = y;
 
 		this.text = text;
 
-		base = new Rect(width, height, color1, 0xffffffff, Sprite.TYPE_GUI_COMPONENT).toSprite();
-		hover = new Rect(width, height, color2, 0xffffffff, Sprite.TYPE_GUI_COMPONENT).toSprite();
+		base = new Rect(width, height, color1, 0xffffffff, Sprite.createLightData(0, 0)).toSprite();
+		hover = new Rect(width, height, color2, 0xffffffff, Sprite.createLightData(0, 0)).toSprite();
 	}
 
 	/**
@@ -102,7 +109,9 @@ public class Button extends UIObject {
 	public Button(String text, ClickListener action, int x, int y, int width, int height, Sprite s0, Sprite s1) {
 		visible = true;
 		this.action = action;
-		hitbox = new Hitbox(x, y, width, height);
+
+		hitbox = new Hitbox(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
+		
 		this.x = x;
 		this.y = y;
 

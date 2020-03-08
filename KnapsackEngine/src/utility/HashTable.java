@@ -2,6 +2,8 @@ package utility;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A hash table implementation
@@ -105,6 +107,19 @@ public class HashTable<K, T> {
 		}
 		return find.stored;
 	}
+	
+	public List<T> getBucket(K key) {
+		ArrayList<T> get = new ArrayList<T>();
+		
+		int location = key.hashCode() % size;
+		Node find = list[location];
+		while (find != null) {
+			get.add(find.stored);
+			find = find.next;
+		}
+		
+		return get;
+	}
 
 	public ArrayList<T> getAll(K key) {
 		ArrayList<T> hold = new ArrayList<T>();
@@ -135,9 +150,8 @@ public class HashTable<K, T> {
 		this.resizable = b;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void clear() {
-		list = (Node[]) Array.newInstance(Node.class, size);
+		Arrays.fill(list, null);
 	}
 
 	/**

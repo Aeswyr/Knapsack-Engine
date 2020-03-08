@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import gfx.DrawGraphics;
 import runtime.Handler;
@@ -21,7 +22,7 @@ public class EntityManager {
 	private ArrayList<Entity> entities;
 	private ArrayList<Entity> remove;
 	private ArrayList<Entity> mobs;
-	private HashTable<CoordKey, Entity> inorder;
+	private HashTable<CoordKey, Entity> proximityHash;
 
 	/**
 	 * Initializes an entityManager which handles rendering and updating entities
@@ -30,7 +31,7 @@ public class EntityManager {
 		entities = new ArrayList<Entity>();
 		remove = new ArrayList<Entity>();
 		mobs = new ArrayList<Entity>();
-		inorder = new HashTable<CoordKey, Entity>();
+		proximityHash = new HashTable<CoordKey, Entity>();
 	}
 
 	/**
@@ -41,28 +42,6 @@ public class EntityManager {
 	public void render(DrawGraphics g) {
 		for (int i = entities.size() - 1; i >= 0; i--) {
 			entities.get(i).render(g);
-		}
-	}
-
-	/**
-	 * renders entities on the list in order based on their positions
-	 * 
-	 * @param x - the current x position to check
-	 * @param y - the current y position to check
-	 * @param g - the graphics object of the screen
-	 */
-	public void renderInOrder(int x, int y, DrawGraphics g) {
-		synchronized (inorder) {
-			CoordKey key = new CoordKey(x, y);
-			if (inorder.hasBucket(key)) {
-				ArrayList<Entity> list = inorder.getAll(key);
-				for (int i = 0; i < list.size(); i++)
-					list.get(i).render(g);
-			} else {
-				Entity e = inorder.get(key);
-				if (e != null)
-					e.render(g);
-			}
 		}
 	}
 
@@ -85,14 +64,14 @@ public class EntityManager {
 	 * added to the remove list
 	 */
 	public void update() {
-		inorder.clear();
-		synchronized (inorder) {
-			for (int i = 0; i < entities.size(); i++) {
-				Entity e = entities.get(i);
-				e.update();
-				inorder.add(new CoordKey(e.getX(), e.getY()), e);
-			}
+		proximityHash.clear();
+
+		for (int i = 0; i < entities.size(); i++) {
+			Entity e = entities.get(i);
+			e.update();
+			proximityHash.add(new CoordKey(e.getX() / Hitbox.BOXCHECK, e.getY() / Hitbox.BOXCHECK), e);
 		}
+
 		for (Entity e : remove)
 			entities.remove(e);
 		remove.clear();
@@ -264,6 +243,29 @@ public class EntityManager {
 	 */
 	public ArrayList<Entity> getMobs() {
 		return mobs;
+	}
+	
+	/**
+	 * @returns a list of entities within the same hash bucket 
+	 */
+	public List<Entity> getProximityEntities(int x, int y) {
+		ArrayList<Entity> get = new ArrayList<Entity>();
+		get.addAll(proximityHash.getBucket(new CoordKey(x, y, 1)));
+		return get;
+		
+	}
+	
+	/**
+	 * @returns a list of entities within the same hash bucket and in buckets out to a radius
+	 */
+	public List<Entity> getProximityEntities(int x, int y, int rad) {
+		ArrayList<Entity> get = new ArrayList<Entity>();
+		for (int i = -rad/2; i < rad/2; i++) {
+			for (int j = -rad/2; j < rad/2; j++) {
+				get.addAll(proximityHash.getBucket(new CoordKey(x + i, y + j, 1)));
+			}
+		}
+		return get;
 	}
 
 }

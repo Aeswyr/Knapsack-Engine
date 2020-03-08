@@ -121,14 +121,14 @@ public class Light implements Serializable{
 	 * causes this light source to begin emitting light
 	 */
 	public void light() {
-		Handler.getLights().add(this);
+		Handler.getLightManager().add(this);
 	}
 
 	/**
 	 * stops this light source from emitting light
 	 */
 	public void snuff() {
-		Handler.getLights().remove(this);
+		Handler.getLightManager().remove(this);
 	}
 
 	/**

@@ -7,11 +7,7 @@ import gfx.DrawGraphics;
  * @author Pascal
  *
  */
-public abstract class State {
-	Handler handler;
-	public State(Handler handler) {
-		this.handler = handler;
-	}
+public abstract class Scene {
 	
 	public abstract void init(String data);
 	

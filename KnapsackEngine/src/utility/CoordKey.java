@@ -34,16 +34,20 @@ public class CoordKey {
 	public CoordKey(int x, int y) {
 		this.x = x;
 		this.y = y;
-		z = 0;
+		z = 1;
 	}
 
 	/**
-	 * @returns the hashcode of this CoordKey, calculated as x ^ 6 + y ^ 4 + z ^ 2 +
-	 *          1
+	 * @returns the hashcode of this CoordKey
+	 *          
 	 * @Override
 	 */
 	public int hashCode() {
-		return Math.abs(this.x ^ 6 + this.y ^ 4 + this.z ^ 2 + 1);
+		int hash = 0;
+		hash = (x >> 8) ^ y + (y >> 8) ^ z + (z >> 8) ^ x;
+		hash = (hash | 0x00005875) ^ (x + y + z);
+		hash = (hash >> 8) ^ hash * 1000111627;
+		return hash;
 	}
 
 	/**
@@ -59,5 +63,11 @@ public class CoordKey {
 			return x == c.x && y == c.y && z == c.z;
 		}
 		return super.equals(obj);
+	}
+	
+	public void update(int x, int y, int z ) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 }

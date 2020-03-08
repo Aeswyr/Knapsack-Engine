@@ -2,6 +2,7 @@ package entity;
 
 import java.io.Serializable;
 import gfx.DrawGraphics;
+import utility.CoordKey;
 
 /**
  * represents any object in the game which has a position and can be interacted
@@ -20,11 +21,11 @@ public abstract class Entity implements Serializable {
 	protected Hitbox hitbox;
 	protected Vector vector;
 	private boolean mobEnabled, vectorEnabled, hitboxEnabled, rigidbodyEnabled;
+	protected CoordKey key;
 	
 	
-
 	public Entity() {
-		
+		key = new CoordKey((int)x, (int)y, 0);
 	}
 
 	/**
@@ -33,7 +34,10 @@ public abstract class Entity implements Serializable {
 	public abstract void update();
 	
 	public void tick() {
-		if (vectorEnabled || rigidbodyEnabled) vector.update();
+		if (vectorEnabled || rigidbodyEnabled) {
+			vector.update();
+			key.update((int)x, (int)y, 0);
+		}
 		if (hitboxEnabled) hitbox.update();
 		update();
 	}

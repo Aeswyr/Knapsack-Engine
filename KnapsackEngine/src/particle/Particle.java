@@ -153,7 +153,7 @@ public class Particle {
 	 * begins updating and rendering this particle
 	 */
 	public void start() {
-		Handler.getParticles().add(this);
+		Handler.getParticleManager().add(this);
 	}
 
 	/**

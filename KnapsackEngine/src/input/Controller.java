@@ -112,10 +112,12 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
 	}
 
 	public static boolean getKeyPressed(char c) {
+		c = Character.toUpperCase(c);
 		return keys[(int) c];
 	}
 
 	public static boolean getKeyTyped(char c) {
+		c = Character.toUpperCase(c);
 		return !lastKeys[(int) c] && keys[(int) c];
 	}
 

@@ -18,9 +18,9 @@ public class Font {
 	 * initializes a font using the sprite at the specified path
 	 * @param path - path to the font data
 	 */
-	public Font(String path) {
+	public Font(String path, int spriteData) {
 
-		font = new Sprite(Loader.loadImage(path), Sprite.TYPE_TEXT);
+		font = new Sprite(Loader.loadImage(path), spriteData);
 
 		offsets = new int[59];
 		widths = new int[59];

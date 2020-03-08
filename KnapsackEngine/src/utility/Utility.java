@@ -125,4 +125,113 @@ public class Utility {
 	public static double cos(double w, double h) {
 		return w * w / (w * w + h * h);
 	}
+
+	/**
+	 * calculates the dot product between two 1d matrices a and b
+	 * 
+	 * @returns the scalar value which represents the dot product of the two
+	 *          matrices
+	 */
+	public static double dot(double[] a, double[] b) {
+		double val = 0;
+		for (int i = 0; i < a.length; i++) {
+			val += a[i] * b[i];
+		}
+		return val;
+	}
+
+	/**
+	 * calculates the dot product between two 1d matrices a and b
+	 * 
+	 * @returns the scalar value which represents the dot product of the two
+	 *          matrices
+	 */
+	public static int dot(int[] a, int[] b) {
+		int val = 0;
+		for (int i = 0; i < a.length; i++) {
+			val += a[i] * b[i];
+		}
+		return val;
+	}
+
+	/**
+	 * calculates the magnitude (length) of a vector represented by the input matrix
+	 * 
+	 * @param a - a 1d matrix representing a vector
+	 * @returns the scalar value corresponding to the magnitude of the vector
+	 */
+	public static double len(int[] a) {
+		int val = 0;
+		for (int i = 0; i < a.length; i++) {
+			val += a[i] * a[i];
+		}
+		return Math.sqrt(val);
+	}
+
+	/**
+	 * calculates the magnitude (length) of a vector represented by the input matrix
+	 * 
+	 * @param a - a 1d matrix representing a vector
+	 * @returns the scalar value corresponding to the magnitude of the vector
+	 */
+	public static double len(double[] a) {
+		int val = 0;
+		for (int i = 0; i < a.length; i++) {
+			val += a[i] * a[i];
+		}
+		return Math.sqrt(val);
+	}
+
+	/**
+	 * calculates the normal of the vector represented by the input points
+	 * 
+	 * @param a - an array representing an x, y point pair, with index 0
+	 *          corresponding to x, and 1 corresponding to y
+	 * @param b - an array representing an x, y point pair, with index 0
+	 *          corresponding to x, and 1 corresponding to y
+	 * @returns an array representation of the normal vector
+	 */
+	public static int[] norm2d(int[] a, int[] b) {
+		int[] c = { a[1] - b[1], a[0] - b[0] };
+		return c;
+	}
+
+	/**
+	 * calculates the normal vector to the input vector
+	 * 
+	 * @param a - a 1d array with 2 elements, representing a 2d vector
+	 * @returns an array representation of the normal vector
+	 */
+	public static int[] norm2d(int[] a) {
+		int[] c = { a[1], a[0] };
+		return c;
+	}
+
+	/**
+	 * multiplies the input matrix by an input rotational or other transformational
+	 * matrix
+	 * 
+	 * @param a - a 1d matrix corresponding to a vector to be transformed
+	 * @param b - a 1d matrix with four elements representing a transformational
+	 *          matrix
+	 * @returns a new 1d vector array with the rotated values
+	 */
+	public static double[] linearMatrixTransform2d(double[] a, double[] b) {
+		double[] c = { a[0] * b[0] + a[1] * b[1], a[0] * b[2] + a[1] * b[3] };
+		return c;
+	}
+
+	/**
+	 * multiplies the input matrix by an input rotational or other transformational
+	 * matrix
+	 * 
+	 * @param a - a 1d matrix corresponding to a vector to be transformed
+	 * @param b - a 1d matrix with four elements representing a transformational
+	 *          matrix
+	 * @returns a new 1d vector array with the rotated values
+	 */
+	public static double[] linearMatrixTransform2d(int[] a, double[] b) {
+		double[] c = { a[0] * b[0] + a[1] * b[1], a[0] * b[2] + a[1] * b[3] };
+		return c;
+	}
 }
