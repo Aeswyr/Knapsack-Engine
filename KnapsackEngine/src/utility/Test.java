@@ -46,17 +46,33 @@ public class Test extends Scene {
 			bcol = true;
 		else
 			bcol = false;
-		
+
 		if (a.colliding(c))
 			ccol = true;
 		else
 			ccol = false;
+
+		//Handler.getCamera().center(x, y);
 		
+		if (a.containsMouseAdj())
+			amcol = true;
+		else
+			amcol = false;
+
+		if (b.containsMouseAdj())
+			bmcol = true;
+		else
+			bmcol = false;
 		
-		Handler.getCamera().center(x, y);
+		if (c.containsMouseAdj())
+			cmcol = true;
+		else
+			cmcol = false;
+		
+
 	}
 
-	boolean bcol, ccol;
+	boolean bcol, ccol, amcol, bmcol, cmcol;
 
 	@Override
 	public void render(DrawGraphics g) {
@@ -68,12 +84,25 @@ public class Test extends Scene {
 			g.drawRect(0, 0, 16, 16, 0xffff0000);
 		else
 			g.drawRect(0, 0, 16, 16, 0xffffffff);
-		
+
 		if (ccol)
 			g.drawRect(16, 0, 16, 16, 0xff00ff00);
 		else
 			g.drawRect(16, 0, 16, 16, 0xffffffff);
 
+		
+		if (amcol)
+			g.drawRect(0, 16, 16, 16, 0xff0000ff);
+		else
+			g.drawRect(0, 16, 16, 16, 0xffffffff);
+		if (bmcol)
+			g.drawRect(0, 32, 16, 16, 0xff0000ff);
+		else
+			g.drawRect(0, 32, 16, 16, 0xffffffff);
+		if (cmcol)
+			g.drawRect(0, 48, 16, 16, 0xff0000ff);
+		else
+			g.drawRect(0, 48, 16, 16, 0xffffffff);
 	}
 
 }

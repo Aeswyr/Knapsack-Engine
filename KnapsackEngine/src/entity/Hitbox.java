@@ -229,12 +229,13 @@ public class Hitbox implements Serializable {
 	 * @returns true if the cursor is within the hitbox, false otherwise
 	 */
 	public boolean containsMouse() {
-		int[] p = { Controller.getX(), Controller.getY() };
+		int[] p = { Controller.getAdjX(), Controller.getAdjY() };
 
 		for (int i = 0; i < points.length; i++) {
-			int x = (int) Utility.linearMatrixTransform2d(p, rot[i])[0];
+			int x0 = (int) Utility.linearMatrixTransform2d(p, rot[i])[0];
+			int r0 = (int) Utility.linearMatrixTransform2d(new int[] {x, y}, rot[i])[0];
 
-			if (x < proj[i][0] || x > proj[i][0] + proj[i][1])
+			if (x0 < proj[i][0] + r0 || x0 > proj[i][0] + proj[i][1] + r0)
 				return false;
 		}
 
@@ -248,13 +249,14 @@ public class Hitbox implements Serializable {
 	 * @returns true if the cursor is within the hitbox, false otherwise
 	 */
 	public boolean containsMouseAdj() {
-		int[] p = { Controller.getX() + Handler.getCamera().xOffset(),
-				Controller.getY() + Handler.getCamera().yOffset() };
+		int[] p = { Controller.getAdjX() + Handler.getCamera().xOffset(),
+				Controller.getAdjY() + Handler.getCamera().yOffset()};
 
 		for (int i = 0; i < points.length; i++) {
-			int x = (int) Utility.linearMatrixTransform2d(p, rot[i])[0];
+			int x0 = (int) Utility.linearMatrixTransform2d(p, rot[i])[0];
+			int r0 = (int) Utility.linearMatrixTransform2d(new int[] {x, y}, rot[i])[0];
 
-			if (x < proj[i][0] || x > proj[i][0] + proj[i][1])
+			if (x0 < proj[i][0] + r0 || x0 > proj[i][0] + proj[i][1] + r0)
 				return false;
 		}
 
