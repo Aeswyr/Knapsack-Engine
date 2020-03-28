@@ -16,11 +16,15 @@ public class Font {
 
 	/**
 	 * initializes a font using the sprite at the specified path
+	 * 
 	 * @param path - path to the font data
 	 */
 	public Font(String path, int spriteData) {
 
-		font = new Sprite(Loader.loadImage(path), spriteData);
+		if (path.contains(":"))
+			font = new Sprite(Loader.loadImageFromFile(path), spriteData);
+		else
+			font = new Sprite(Loader.loadImage(path), spriteData);
 
 		offsets = new int[59];
 		widths = new int[59];
@@ -46,14 +50,16 @@ public class Font {
 	}
 
 	/**
-	 * @returns an array containing the widths of each character organized by their unicode values
+	 * @returns an array containing the widths of each character organized by their
+	 *          unicode values
 	 */
 	protected int[] getWidths() {
 		return widths;
 	}
 
 	/**
-	 * @returns an array containing the offsets of each character organized by their unicode values
+	 * @returns an array containing the offsets of each character organized by their
+	 *          unicode values
 	 */
 	protected int[] getOffsets() {
 		return offsets;

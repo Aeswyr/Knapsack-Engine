@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import javax.imageio.ImageIO;
@@ -29,6 +30,21 @@ public class Loader {
 	public static BufferedImage loadImage(String path) {
 		try {
 			return ImageIO.read(Loader.class.getResourceAsStream(path));
+		} catch (Exception e) {
+			System.out.println("Resource at " + path + " failed to load");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Loads an image resource from a file path
+	 * @param path - the path to the desired resource
+	 * @return a BufferedImage loaded from the path, null if the load fails
+	 */
+	public static BufferedImage loadImageFromFile(String path) {
+		try {
+			return ImageIO.read(new File(path));
 		} catch (Exception e) {
 			System.out.println("Resource at " + path + " failed to load");
 			e.printStackTrace();
@@ -102,6 +118,7 @@ public class Loader {
 		return read;
 	}
 	
+	
 	/**
 	 * Loads a InputStreamReader linked to a file at the specified path OUTSIDE the game jar/resource folder
 	 * @param path - the path to the desired resource
@@ -120,5 +137,19 @@ public class Loader {
 		BufferedReader read = new BufferedReader(new InputStreamReader(f, encoding));
 		
 		return read;
+	}
+	
+	/**
+	 * @returns the location this jar was run from in the filepath
+	 */
+	public static String getJarLocation() {
+		try {
+			return new File(Loader.class.getProtectionDomain().getCodeSource().getLocation()
+				    .toURI()).getPath();
+		} catch (URISyntaxException e) {
+			System.out.println("Classpath fetch failed");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

@@ -2,7 +2,6 @@ package gui;
 
 import java.util.ArrayList;
 import entity.Hitbox;
-import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import input.Controller;
@@ -17,9 +16,10 @@ public class Button extends UIObject {
 
 	private ClickListener action;
 	protected boolean hovered = false;
-	private boolean visible = false;
+	protected boolean visible = false;
 	private Hitbox hitbox;
-	private Sprite base, hover;
+	protected Sprite base;
+	protected Sprite hover;
 	String text = null;
 
 	/**
@@ -49,11 +49,11 @@ public class Button extends UIObject {
 	 * @param y       - y position of this button
 	 * @param width   - width of the button hitbox
 	 * @param height  - height of the button hitbox
-	 * @param color1  - color of the button
-	 * @param color2  - color of the button when the mouse hovers over it
+	 * @param n1  - nine-slice for the button in idle position
+	 * @param n2  - nine-slice for the button when hovered over
 	 * @param handler
 	 */
-	public Button(ClickListener action, int x, int y, int width, int height, int color1, int color2) {
+	public Button(ClickListener action, int x, int y, int width, int height, NineSlice n1, NineSlice n2) {
 		visible = true;
 		this.action = action;
 		
@@ -63,8 +63,8 @@ public class Button extends UIObject {
 		this.y = y;
 
 		//TODO ui scripting system to set up sprite data correctly
-		base = new Rect(width, height, color1, 0xffffffff, Sprite.createLightData(0, 0)).toSprite();
-		hover = new Rect(width, height, color2, 0xffffffff, Sprite.createLightData(0, 0)).toSprite();
+		base = n1.build(width, height, Sprite.createLightData(0, 0));
+		hover = n2.build(width, height, Sprite.createLightData(0, 0));
 	}
 
 	/**
@@ -76,10 +76,10 @@ public class Button extends UIObject {
 	 * @param y      - y position of this button
 	 * @param width  - width of the button hitbox
 	 * @param height - height of the button hitbox
-	 * @param color1 - color of the button
-	 * @param color2 - color of the button when the mouse hovers over it
+	 * @param n1  - nine-slice for the button in idle position
+	 * @param n2  - nine-slice for the button when hovered over
 	 */
-	public Button(String text, ClickListener action, int x, int y, int width, int height, int color1, int color2) {
+	public Button(String text, ClickListener action, int x, int y, int width, int height,  NineSlice n1, NineSlice n2) {
 		visible = true;
 		this.action = action;
 
@@ -90,8 +90,8 @@ public class Button extends UIObject {
 
 		this.text = text;
 
-		base = new Rect(width, height, color1, 0xffffffff, Sprite.createLightData(0, 0)).toSprite();
-		hover = new Rect(width, height, color2, 0xffffffff, Sprite.createLightData(0, 0)).toSprite();
+		base = n1.build(width, height, Sprite.createLightData(0, 0));
+		hover = n2.build(width, height, Sprite.createLightData(0, 0));
 	}
 
 	/**
@@ -164,25 +164,25 @@ public class Button extends UIObject {
 		action.onClick(this);
 	}
 
-	public class Back extends Button {
-
-		public Back(ArrayList<UIObject> add, ArrayList<UIObject> remove, int x, int y) {
-			super("Back", new ClickListener() {
-
-				@Override
-				public void onClick(UIObject source) {
-					for (int i = 0; i < add.size(); i++) {
-						add.get(i).display();
-					}
-					for (int i = 0; i < remove.size(); i++) {
-						remove.get(i).close();
-					}
-				}
-
-			}, x, y, 80, 32, 0xffcccccc, 0xffaaaaaa);
-
-		}
-
-	}
+//	public class Back extends Button {
+//
+//		public Back(ArrayList<UIObject> add, ArrayList<UIObject> remove, int x, int y) {
+//			super("Back", new ClickListener() {
+//
+//				@Override
+//				public void onClick(UIObject source) {
+//					for (int i = 0; i < add.size(); i++) {
+//						add.get(i).display();
+//					}
+//					for (int i = 0; i < remove.size(); i++) {
+//						remove.get(i).close();
+//					}
+//				}
+//
+//			}, x, y, 80, 32, 0xffcccccc, 0xffaaaaaa);
+//
+//		}
+//
+//	}
 
 }

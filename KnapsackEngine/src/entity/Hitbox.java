@@ -47,17 +47,20 @@ public class Hitbox implements Serializable {
 	 * is the width of the projection
 	 */
 	private int[][] proj;
+
+	/**
+	 * determines the size in pixels for grouping hitboxes
+	 */
 	public static int BOXCHECK = 64;
 
 	/**
 	 * initializes a hitbox for an entity
 	 * 
-	 * @param xOffset - offset from the entity's x to place the hitbox
-	 * @param yOffset - offset from the entity's y to place the hitbox
-	 * @param width   - width of the hitbox
-	 * @param height  - height of the hitbox
+	 * @param xOffset - offset from the entity's x to place the hitbox's first point
+	 * @param yOffset - offset from the entity's y to place the hitbox's first point
+	 * @param points  - list of points outlining the hitbox in the clockwise
+	 *                direction
 	 * @param e       - entity which this hitbox is bound to
-	 * @param handler
 	 */
 	public Hitbox(int xOffset, int yOffset, int[][] points, Entity e) {
 		this.points = points;
@@ -88,11 +91,8 @@ public class Hitbox implements Serializable {
 	/**
 	 * initializes a hitbox which isnt bound to any entity
 	 * 
-	 * @param x       - x pos of this hitbox
-	 * @param y       - y pos of this hitbox
-	 * @param width   - width of the hitbox
-	 * @param height  - height of the hitbox
-	 * @param handler
+	 * @param points - list of points outlining the hitbox in the clockwise
+	 *               direction
 	 */
 	public Hitbox(int[][] points) {
 		this.points = points;
@@ -117,6 +117,10 @@ public class Hitbox implements Serializable {
 
 	}
 
+	/**
+	 * establishes the axises for SAT, as well as the projections for this shape in
+	 * each of its rotations and its rotational matrices
+	 */
 	private void setupAxis() {
 		axis = new int[points.length][2];
 
@@ -127,8 +131,7 @@ public class Hitbox implements Serializable {
 
 		for (int i = 0; i < axis.length; i++) {
 			axis[i] = Utility.norm2d(points[i], points[(i + 1) % points.length]);
-			theta =
-			rot[i][0] = -axis[i][0] / Utility.len(axis[i]);
+			theta = rot[i][0] = -axis[i][0] / Utility.len(axis[i]);
 			rot[i][1] = axis[i][1] / Utility.len(axis[i]);
 			rot[i][2] = -axis[i][1] / Utility.len(axis[i]);
 			rot[i][3] = -axis[i][0] / Utility.len(axis[i]);
@@ -233,7 +236,7 @@ public class Hitbox implements Serializable {
 
 		for (int i = 0; i < points.length; i++) {
 			int x0 = (int) Utility.linearMatrixTransform2d(p, rot[i])[0];
-			int r0 = (int) Utility.linearMatrixTransform2d(new int[] {x, y}, rot[i])[0];
+			int r0 = (int) Utility.linearMatrixTransform2d(new int[] { x, y }, rot[i])[0];
 
 			if (x0 < proj[i][0] + r0 || x0 > proj[i][0] + proj[i][1] + r0)
 				return false;
@@ -250,11 +253,11 @@ public class Hitbox implements Serializable {
 	 */
 	public boolean containsMouseAdj() {
 		int[] p = { Controller.getAdjX() + Handler.getCamera().xOffset(),
-				Controller.getAdjY() + Handler.getCamera().yOffset()};
+				Controller.getAdjY() + Handler.getCamera().yOffset() };
 
 		for (int i = 0; i < points.length; i++) {
 			int x0 = (int) Utility.linearMatrixTransform2d(p, rot[i])[0];
-			int r0 = (int) Utility.linearMatrixTransform2d(new int[] {x, y}, rot[i])[0];
+			int r0 = (int) Utility.linearMatrixTransform2d(new int[] { x, y }, rot[i])[0];
 
 			if (x0 < proj[i][0] + r0 || x0 > proj[i][0] + proj[i][1] + r0)
 				return false;

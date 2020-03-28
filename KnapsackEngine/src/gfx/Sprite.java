@@ -391,7 +391,7 @@ public class Sprite implements Serializable {
 	/**
 	 * @returns the raw raster data for the current frame
 	 */
-	protected int[] getRawFrame() {
+	public int[] getRawFrame() {
 		return raw[frame];
 	}
 

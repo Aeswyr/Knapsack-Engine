@@ -33,7 +33,7 @@ public class Screen extends Canvas {
 	 * @param width - desired width
 	 * @param height - desired height
 	 */
-	public Screen(int width, int height) {
+	public Screen(int width, int height, String title) {
 
 		frame = new JFrame();
 		d = new Dimension();
@@ -73,8 +73,8 @@ public class Screen extends Canvas {
 			this.setMinimumSize(d);
 		}
 
-		frame.setTitle("Into Darkness");
-		frame.setName("Into Darkness");
+		frame.setTitle(title);
+		frame.setName(title);
 
 		frame.add(this);
 		frame.pack();

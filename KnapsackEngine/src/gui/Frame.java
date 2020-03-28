@@ -1,6 +1,5 @@
 package gui;
 
-import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 
@@ -20,19 +19,14 @@ public class Frame extends UIObject {
 	 * @param y      - y position of the frame
 	 * @param width  - width of the frame
 	 * @param height - height of the frame
-	 * @param color  - primary color of the frame
-	 * @param border - border color of the frame
+	 * @param n      - nineslice to use to construct the frame
 	 */
-	public Frame(int x, int y, int width, int height, int color, int border) {
+	public Frame(int x, int y, int width, int height, NineSlice n) {
 		this.x = x;
 		this.y = y;
 
-		
-		//TODO ui scripting system to set up sprite data correctly
-		if (color != border)
-			frame = new Rect(width, height, color, border, Sprite.createLightData(0, 0)).toSprite();
-		else
-			frame = new Rect(width, height, color, Sprite.createLightData(0, 0)).toSprite();
+		// TODO ui scripting system to set up sprite data correctly
+		frame = n.build(width, height, Sprite.createLightData(0, 0));
 	}
 
 	/**
@@ -42,18 +36,14 @@ public class Frame extends UIObject {
 	 * @param y      - y position of the frame
 	 * @param width  - width of the frame
 	 * @param height - height of the frame
-	 * @param color  - primary color of the frame
-	 * @param border - border color of the frame
+	 * @param n      - nineslice to use to construct the
 	 * @param type   - render type for gui sprite
 	 */
-	public Frame(int x, int y, int width, int height, int color, int border, int type) {
+	public Frame(int x, int y, int width, int height, NineSlice n, int type) {
 		this.x = x;
 		this.y = y;
 
-		if (color != border)
-			frame = new Rect(width, height, color, border, type).toSprite();
-		else
-			frame = new Rect(width, height, color, type).toSprite();
+		frame = n.build(width, height, type);
 	}
 
 	/**

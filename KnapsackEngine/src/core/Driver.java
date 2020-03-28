@@ -18,9 +18,9 @@ public class Driver implements Runnable {
 	protected Screen screen;
 	protected DrawGraphics canvas;
 
-	public Driver(int w, int h) {
+	public Driver(int w, int h, String title) {
 
-		screen = new Screen(w, h);
+		screen = new Screen(w, h, title);
 		canvas = new DrawGraphics(this);
 
 	}
