@@ -37,12 +37,15 @@ public class DrawGraphics {
 
 	boolean lightingEnabled = false;
 
+	Driver d;
+
 	public DrawGraphics(Driver d) {
-		width = 960;
-		height = 540;
+
 		fullWidth = d.getWidth();
 		fullHeight = d.getHeight();
 		System.out.println(fullWidth + ", " + fullHeight);
+		width = (int) Math.ceil(d.getWidth() / Driver.xScale);
+		height = (int) Math.ceil(d.getHeight() / Driver.yScale);
 		screen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		raster = ((DataBufferInt) screen.getRaster().getDataBuffer()).getData();
 		zBuffer = new int[raster.length];
@@ -51,6 +54,8 @@ public class DrawGraphics {
 
 		requestList = new ArrayList<Request>();
 		lightRequest = new ArrayList<LightRequest>();
+
+		this.d = d;
 
 		ambientColor = 0xff000000;
 	}
@@ -183,6 +188,7 @@ public class DrawGraphics {
 	 * @param y    - y position to write at
 	 */
 	public void write(String text, int x, int y) {
+		if (text == null) return;
 		requestList.add(new TextRequest(text, x, y, 0xffffffff));
 	}
 
@@ -196,6 +202,7 @@ public class DrawGraphics {
 	 * @param color - color of the text
 	 */
 	public void write(String text, int x, int y, int color) {
+		if (text == null) return;
 		requestList.add(new TextRequest(text, x, y, color));
 	}
 
@@ -675,5 +682,17 @@ public class DrawGraphics {
 	 */
 	public void setLightingEnabled(boolean light) {
 		this.lightingEnabled = light;
+	}
+
+	public void updateScale(double xScale, double yScale) {
+		Driver.xScale = xScale;
+		Driver.yScale = yScale;
+		width = (int) Math.ceil(d.getWidth() / Driver.xScale);
+		height = (int) Math.ceil(d.getHeight() / Driver.yScale);
+		screen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		raster = ((DataBufferInt) screen.getRaster().getDataBuffer()).getData();
+		zBuffer = new int[raster.length];
+		lightMap = new int[raster.length];
+		lightCollision = new int[raster.length];
 	}
 }

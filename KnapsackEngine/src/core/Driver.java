@@ -6,7 +6,8 @@ import runtime.Handler;
 
 /**
  * main engine of the game, updates and manages all processes
- * @author pmkgb
+ * 
+ * @author Pascal
  *
  */
 public class Driver implements Runnable {
@@ -57,9 +58,10 @@ public class Driver implements Runnable {
 		}
 
 	}
-/**
- * starts this thread and starts the renderer
- */
+
+	/**
+	 * starts this thread and starts the renderer
+	 */
 	public synchronized void start() {
 		Handler.init(this);
 		running = true;
@@ -79,6 +81,7 @@ public class Driver implements Runnable {
 
 	/**
 	 * gets the screen width
+	 * 
 	 * @returns the true width of the screen
 	 */
 	public int getWidth() {
@@ -87,6 +90,7 @@ public class Driver implements Runnable {
 
 	/**
 	 * gets the screen height
+	 * 
 	 * @returns the true height of the screen
 	 */
 	public int getHeight() {
@@ -95,6 +99,7 @@ public class Driver implements Runnable {
 
 	/**
 	 * gets the game window
+	 * 
 	 * @returns the screen object the game is rendered on
 	 */
 	public Screen getScreen() {
@@ -103,6 +108,7 @@ public class Driver implements Runnable {
 
 	/**
 	 * gets the DrawGraphics component associated with the renderer
+	 * 
 	 * @returns the DrawGraphics component of the renderer
 	 */
 	public DrawGraphics getCanvas() {
@@ -111,6 +117,7 @@ public class Driver implements Runnable {
 
 	/**
 	 * sets whether or not to cap fps
+	 * 
 	 * @param capped - true to cap fps, false to uncap
 	 */
 	public void setCapped(boolean capped) {
@@ -119,7 +126,9 @@ public class Driver implements Runnable {
 
 	/**
 	 * sets the current input listeners
-	 * @param c - the Controller with the desired KeyListener, MouseListener, and MouseMotionlistener
+	 * 
+	 * @param c - the Controller with the desired KeyListener, MouseListener, and
+	 *          MouseMotionlistener
 	 */
 	public void setControls(Controller c) {
 		screen.addMouseListener(c);

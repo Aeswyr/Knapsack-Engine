@@ -21,6 +21,14 @@ public abstract class UIObject {
 	public abstract void render(DrawGraphics g);
 
 	/**
+	 * shows dev functions related to this object, such as hitboxes or vectors
+	 * @param g
+	 */
+	public void renderDevMode(DrawGraphics g) {
+		
+	}
+	
+	/**
 	 * Updates this UI component
 	 */
 	public abstract void update();

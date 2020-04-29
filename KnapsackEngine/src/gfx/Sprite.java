@@ -25,11 +25,9 @@ public class Sprite implements Serializable {
 	int width, height;
 
 	int xOff, yOff;
-	
 
 	int frames;
 	long delta, lastTime;
-
 
 	/**
 	 * Loads a sprite using a buffered image
@@ -184,7 +182,7 @@ public class Sprite implements Serializable {
 
 		this.width = width;
 		this.height = height;
-
+		this.fps = fps;
 		raw = new int[frames][];
 		for (int i = 0; i < frames; i++) {
 			BufferedImage b = sheet.cut(x, y + height * i, width, height);
@@ -212,7 +210,7 @@ public class Sprite implements Serializable {
 
 		this.width = width;
 		this.height = height;
-
+		this.fps = fps;
 		raw = new int[frames][];
 		for (int i = 0; i < frames; i++) {
 			BufferedImage b = sheet.cut(x, y + height * i, width, height);
@@ -223,6 +221,34 @@ public class Sprite implements Serializable {
 
 	}
 
+	/**
+	 * loads an animated sprite from a spritesheet
+	 * 
+	 * @param x      - x position of the topmost frame of the animation
+	 * @param y      - y position of the topmost frame of the animation
+	 * @param width  - width of each animation frame
+	 * @param height - height of each animation frame
+	 * @param frames - number of frames
+	 * @param fps    - number of frames per second
+	 * @param sheet  - spritesheet to load from
+	 */
+	public Sprite(int width, int height, int[][] raw, int frames, int fps, int type) {
+
+		settings(type);
+
+		this.frames = frames;
+		if (fps > 0)
+			this.delta = 1000000000 / fps;
+		this.fps = fps;
+		this.width = width;
+		this.height = height;
+
+		this.raw = raw;
+		lastTime = System.nanoTime();
+
+	}
+
+	int fps;
 	byte frame;
 
 	/**
@@ -349,7 +375,8 @@ public class Sprite implements Serializable {
 			}
 		}
 
-		Sprite[] s = { new Sprite(width, height, r, createLightData(priority, lightInteraction)), new Sprite(width, height, g, createLightData(priority, lightInteraction)),
+		Sprite[] s = { new Sprite(width, height, r, createLightData(priority, lightInteraction)),
+				new Sprite(width, height, g, createLightData(priority, lightInteraction)),
 				new Sprite(width, height, b, createLightData(priority, lightInteraction)) };
 		return s;
 	}
@@ -383,7 +410,8 @@ public class Sprite implements Serializable {
 			}
 		}
 
-		Sprite[] s = { new Sprite(width, height, r, createLightData(priority, lightInteraction)), new Sprite(width, height, g, createLightData(priority, lightInteraction)),
+		Sprite[] s = { new Sprite(width, height, r, createLightData(priority, lightInteraction)),
+				new Sprite(width, height, g, createLightData(priority, lightInteraction)),
 				new Sprite(width, height, b, createLightData(priority, lightInteraction)) };
 		return s;
 	}
@@ -443,12 +471,44 @@ public class Sprite implements Serializable {
 		this.lightInteraction = type & 0x00000003;
 		this.priority = type >> 2;
 	}
-	
+
 	public static int createLightData(int renderPriority, int lightInteraction) {
-		
+
 		return (renderPriority << 2) | (lightInteraction & 0x00000003);
 	}
-	
-	
-	
+
+	public void setFrame(int frame) {
+		this.frame = (byte) frame;
+	}
+
+	public void flip() {
+		int[][] r = new int[frames][width * height];
+		for (int i = 0; i < frames; i++) {
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					r[i][y * width + x] = raw[i][(y + 1) * width - 1 - x];
+				}
+			}
+		}
+
+		raw = r;
+	}
+
+	public Sprite getFlip() {
+		int[][] r = new int[frames][width * height];
+		for (int i = 0; i < frames; i++) {
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					r[i][y * width + x] = raw[i][(y + 1) * width - 1 - x];
+				}
+			}
+		}
+
+		return new Sprite(width, height, r, frames, fps, createLightData(priority, lightInteraction));
+	}
+
+	public Sprite get() {
+		return new Sprite(width, height, raw, frames, fps, createLightData(priority, lightInteraction));
+	}
+
 }

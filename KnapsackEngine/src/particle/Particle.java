@@ -5,6 +5,7 @@ import java.util.Random;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import runtime.Handler;
+import runtime.Light;
 
 /**
  * Object which manages a cluster of similar particles
@@ -154,6 +155,10 @@ public class Particle {
 	 */
 	public void start() {
 		Handler.getParticleManager().add(this);
+	}
+	
+	public void renderDevMode(DrawGraphics g) {
+		g.drawRect(x, y, 2, 2, 0xffffffff, Sprite.createLightData(999999, Light.IGNORE));
 	}
 
 	/**

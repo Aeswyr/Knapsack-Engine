@@ -1,20 +1,27 @@
 package runtime;
 
-import entity.Entity;
+import entity.Entity_KS;
 
 /**
- * calculates offsets for onscreen objects to keep a specified entity centered onscreen
+ * calculates offsets for onscreen objects to keep a specified entity centered
+ * onscreen
+ * 
  * @author Pascal
  *
  */
 public class Camera {
-	Entity target;
+	Entity_KS target;
 	private int xOffset;
 	private int yOffset;
 
 	int w, h;
 
 	public Camera() {
+		w = Handler.getWidth();
+		h = Handler.getHeight();
+	}
+
+	public void refresh() {
 		w = Handler.getWidth();
 		h = Handler.getHeight();
 	}
@@ -28,9 +35,11 @@ public class Camera {
 			yOffset += (target.getY() - yOffset) / 4;
 		}
 	}
-	
+
 	/**
-	 * centers the camera on the specified point until it is moved or reassigned an entity target
+	 * centers the camera on the specified point until it is moved or reassigned an
+	 * entity target
+	 * 
 	 * @param x - x position to center on
 	 * @param y - y position to center on
 	 */
@@ -42,9 +51,10 @@ public class Camera {
 
 	/**
 	 * determines which entity will be the camera target
+	 * 
 	 * @param e - the entity to target
 	 */
-	public void centerOnEntity(Entity e) {
+	public void centerOnEntity(Entity_KS e) {
 		target = e;
 	}
 
@@ -61,14 +71,14 @@ public class Camera {
 	public int yOffset() {
 		return yOffset - h / 2;
 	}
-	
+
 	/**
 	 * @returns the raw x offset, not adjusted for screen centering
 	 */
 	public int xOffsetAdj() {
 		return xOffset;
 	}
-	
+
 	/**
 	 * @returns the raw y offset, not adjusted for screen centering
 	 */

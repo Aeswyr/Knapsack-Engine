@@ -14,20 +14,38 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
 	public static final char RIGHT = (char) KeyEvent.VK_RIGHT;
 	public static final char UP = (char) KeyEvent.VK_UP;
 	public static final char DOWN = (char) KeyEvent.VK_DOWN;
+	public static final char SPACE = (char) KeyEvent.VK_SPACE;
+	public static final char SHIFT = (char) KeyEvent.VK_SHIFT;
+	public static final char CTRL = (char) KeyEvent.VK_CONTROL;
+	public static final char ALT = (char) KeyEvent.VK_ALT;
+	public static final char TAB = (char) KeyEvent.VK_TAB;
+	public static final char ENTER = (char) KeyEvent.VK_ENTER;
+	public static final char CPSLOCK = (char) KeyEvent.VK_CAPS_LOCK;
+	public static final char ESC = (char) KeyEvent.VK_ESCAPE;
 	public static final int MOUSELEFT = 0;
 	public static final int MOUSEMIDDLE = 1;
 	public static final int MOUSERIGHT = 2;
+	
 
+	static boolean[] k = new boolean[256];
 	static boolean[] keys = new boolean[256];
 	static boolean[] lastKeys = new boolean[256];
 
 	static int x, y;
 	static boolean mouseLeft, mouseRight, mouseMiddle;
+	static boolean ml0, mm0, mr0, ml1, mm1, mr1;
 
 	public static void update() {
 		for (int i = 0; i < keys.length; i++) {
 			lastKeys[i] = keys[i];
+			keys[i] = k[i];
 		}
+		ml0 = ml1;
+		ml1 = mouseLeft;
+		mm0 = mm1;
+		mm1 = mouseMiddle;
+		mr0 = mr1;
+		mr1 = mouseRight;
 	}
 
 	@Override
@@ -102,22 +120,24 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		keys[e.getKeyCode()] = true;
+		k[e.getKeyCode()] = true;
 
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		keys[e.getKeyCode()] = false;
+		k[e.getKeyCode()] = false;
 	}
 
 	public static boolean getKeyPressed(char c) {
-		c = Character.toUpperCase(c);
+		if ((int) c > 96 && (int) c < 123)
+			c = Character.toUpperCase(c);
 		return keys[(int) c];
 	}
 
 	public static boolean getKeyTyped(char c) {
-		c = Character.toUpperCase(c);
+		if ((int) c > 96 && (int) c < 123)
+			c = Character.toUpperCase(c);
 		return !lastKeys[(int) c] && keys[(int) c];
 	}
 
@@ -133,6 +153,18 @@ public class Controller implements KeyListener, MouseListener, MouseMotionListen
 		return false;
 	}
 	
+	public static boolean getMouseTyped(int mouseButton) {
+		switch (mouseButton) {
+		case MOUSELEFT:
+			return !ml0 && ml1;
+		case MOUSEMIDDLE:
+			return !mm0 && mm1;
+		case MOUSERIGHT:
+			return !mr0 && mr1;
+		}
+		return false;
+	}
+
 	/**
 	 * @returns the mouse x position in pixels on the frame
 	 */

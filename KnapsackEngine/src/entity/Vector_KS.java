@@ -2,6 +2,7 @@ package entity;
 
 import java.io.Serializable;
 import gfx.DrawGraphics;
+import map.BaseTile_KS;
 import runtime.Handler;
 
 /**
@@ -11,16 +12,21 @@ import runtime.Handler;
  * @author Pascal
  *
  */
-public class Vector implements Serializable {
+public class Vector_KS implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7160300851222198335L;
 	double Ax, Ay; // in tiles per second per second
 	double Vx, Vy; // in tiles per second;
-	transient Entity linked;
+	transient Entity_KS linked;
 	int mass = 0;
 	boolean ghost = false;
+	Entity_KS lastCol = null;
+
+	static double GLOBAL_GRAVITY = 0;
+	static int COLLISION_PROXIMITY = 4;
+
 	/*
 	 * stores values to do with force, index 0 is x acceleration, index 1 is y
 	 * acceleration and index 2 is the number of frames to apply for
@@ -36,7 +42,7 @@ public class Vector implements Serializable {
 	 * @param mass - mass for force and friction calculations. 0 mass to disable
 	 *             friction
 	 */
-	public Vector(Entity e, int mass) {
+	public Vector_KS(Entity_KS e, int mass) {
 		this.linked = e;
 		this.mass = mass;
 	}
@@ -46,11 +52,12 @@ public class Vector implements Serializable {
 	 * updates the linked entity's position
 	 */
 	public void update() {
+		lastCol = null;
 		if (fframes > 0)
 			fframes--;
 		else {
 			Vx += Ax / 60;
-			Vy += Ay / 60;
+			Vy += Ay / 60 - GLOBAL_GRAVITY / 60;
 
 			for (int i = 0; i < 5; i++) {
 				if (forceBuffer[i][2] > 0) {
@@ -63,8 +70,6 @@ public class Vector implements Serializable {
 			if (iframes > 0)
 				iframes--;
 
-			// TODO redo tile collisions with polygon system
-
 			if (mass > 0) {
 				if (Math.abs(Vx) > 0.1)
 					Vx *= 0.85;
@@ -75,22 +80,55 @@ public class Vector implements Serializable {
 				else
 					Vy = 0;
 			}
-			
-			
-			
 
 			Ax = 0;
 			Ay = 0;
 		}
-		
-		if (linked.hasHitbox()) {
-			
-		} else {
-			linked.setX((int) (linked.getX() + Vx));
-			linked.setY((int) (linked.getY() + Vy));
-		}
-		
 
+		if (linked != null && linked.hasHitbox()) {
+			if (!linked.hitbox.tileYCollide((int) (Vy * BaseTile_KS.TILE_SIZE / 60)) || ghost)
+				linked.y += Vy * BaseTile_KS.TILE_SIZE / 60;
+			else {
+				while (linked.hitbox.tileYCollide((int) (Vy * BaseTile_KS.TILE_SIZE / 60))
+						&& Math.abs(Vy) > 60 / BaseTile_KS.TILE_SIZE)
+					if (Vy > 0)
+						Vy--;
+					else
+						Vy++;
+				if (Math.abs(Vy) > 60 / BaseTile_KS.TILE_SIZE)
+					linked.y += Vy * BaseTile_KS.TILE_SIZE / 60;
+				Ay = 0;
+				Vy = 0;
+			}
+
+			if (!linked.hitbox.tileXCollide((int) (Vx * BaseTile_KS.TILE_SIZE / 60)) || ghost)
+				linked.x += Vx * BaseTile_KS.TILE_SIZE / 60;
+			else {
+				while (linked.hitbox.tileXCollide((int) (Vx * BaseTile_KS.TILE_SIZE / 60))
+						&& Math.abs(Vx) > 60 / BaseTile_KS.TILE_SIZE)
+					if (Vx > 0)
+						Vx--;
+					else
+						Vx++;
+				if (Math.abs(Vx) > 60 / BaseTile_KS.TILE_SIZE)
+					linked.x += Vx * BaseTile_KS.TILE_SIZE / 60;
+				Ax = 0;
+				Vx = 0;
+			}
+		}
+		if (mass > 0) {
+			if (Math.abs(Vx) > 0)
+				Vx *= 0.85;
+			else
+				Vx = 0;
+			if (Math.abs(Vy) > 0)
+				Vy *= 0.85;
+			else
+				Vy = 0;
+		}
+
+		Ax = 0;
+		Ay = 0;
 	}
 
 	/**
@@ -233,12 +271,93 @@ public class Vector implements Serializable {
 		ghost = b;
 	}
 
+	public static void setGlobalGravity(double g) {
+		GLOBAL_GRAVITY = g;
+	}
+
 	/**
 	 * called when this vector is loaded from a file, reassigns the owner entity
 	 * 
 	 * @param e - entity to link to this vector
 	 */
-	public void load(Entity e) {
+	public void load(Entity_KS e) {
 		this.linked = e;
+	}
+
+	/**
+	 * change the range at which hitboxes check for movement-restricting collisions.
+	 * Higher values will cause slowdown, but lower values may miss collisions with
+	 * larger hitboxes
+	 * 
+	 * @param proxy - range to check (in increments of 64 pixels)
+	 */
+	public static void adjustCollisionProximity(int proxy) {
+		COLLISION_PROXIMITY = proxy;
+	}
+
+	public static int xReject(Hitbox_KS primary, Hitbox_KS secondary) {
+		int n0 = 0;
+		if (primary.x > secondary.x) {
+			while (!primary.projectColliding(secondary, n0, 0))
+				n0--;
+			n0++;
+		} else {
+			while (!primary.projectColliding(secondary, n0, 0))
+				n0++;
+			n0--;
+		}
+		return n0;
+	}
+
+	public static int yReject(Hitbox_KS primary, Hitbox_KS secondary) {
+		int n0 = 0;
+		if (primary.y > secondary.y) {
+			while (!primary.projectColliding(secondary, 0, n0))
+				n0--;
+			n0++;
+		} else {
+			while (!primary.projectColliding(secondary, 0, n0))
+				n0++;
+			n0--;
+		}
+		return n0;
+	}
+
+	public static int[] dReject(Hitbox_KS primary, Hitbox_KS secondary) {
+		int n0 = 0;
+		boolean my = primary.y > secondary.y;
+		boolean mx = primary.x > secondary.x;
+		if (my && mx) {
+			while (!primary.projectColliding(secondary, n0, n0))
+				n0--;
+			n0++;
+			return new int[] { n0, n0 };
+		} else if (!my && !mx) {
+			while (!primary.projectColliding(secondary, n0, n0))
+				n0++;
+			n0--;
+			return new int[] { n0, n0 };
+		} else if (my && !mx) {
+			while (!primary.projectColliding(secondary, -n0, n0))
+				n0--;
+			n0++;
+			return new int[] { -n0, n0 };
+		} else {
+			while (!primary.projectColliding(secondary, n0, -n0))
+				n0--;
+			n0++;
+			return new int[] { n0, -n0 };
+		}
+
+	}
+
+	boolean grounded = false;
+
+	public boolean grounded() {
+		return grounded;
+	}
+
+	public Entity_KS collision() {
+		return lastCol;
 	}
 }

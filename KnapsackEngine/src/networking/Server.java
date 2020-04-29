@@ -1,6 +1,7 @@
 package networking;
 
 import java.io.IOException;
+
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
@@ -12,7 +13,6 @@ import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Set;
 
 public class Server implements Runnable {
 

@@ -1,7 +1,7 @@
 package gui;
 
-import java.util.ArrayList;
-import entity.Hitbox;
+import entity.HitSquare_KS;
+import entity.Hitbox_KS;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import input.Controller;
@@ -17,7 +17,7 @@ public class Button extends UIObject {
 	private ClickListener action;
 	protected boolean hovered = false;
 	protected boolean visible = false;
-	private Hitbox hitbox;
+	private Hitbox_KS hitbox;
 	protected Sprite base;
 	protected Sprite hover;
 	String text = null;
@@ -35,7 +35,7 @@ public class Button extends UIObject {
 	public Button(ClickListener action, int x, int y, int width, int height) {
 		this.action = action;
 
-		hitbox = new Hitbox(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
+		hitbox = new HitSquare_KS(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
 		
 		this.x = x;
 		this.y = y;
@@ -57,7 +57,7 @@ public class Button extends UIObject {
 		visible = true;
 		this.action = action;
 		
-		hitbox = new Hitbox(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
+		hitbox = new Hitbox_KS(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
 		
 		this.x = x;
 		this.y = y;
@@ -79,19 +79,19 @@ public class Button extends UIObject {
 	 * @param n1  - nine-slice for the button in idle position
 	 * @param n2  - nine-slice for the button when hovered over
 	 */
-	public Button(String text, ClickListener action, int x, int y, int width, int height,  NineSlice n1, NineSlice n2) {
+	public Button(String text, ClickListener action, int x, int y, int width, int height,  NineSlice n1, NineSlice n2, int type) {
 		visible = true;
 		this.action = action;
 
-		hitbox = new Hitbox(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
+		hitbox = new Hitbox_KS(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
 		
 		this.x = x;
 		this.y = y;
 
 		this.text = text;
 
-		base = n1.build(width, height, Sprite.createLightData(0, 0));
-		hover = n2.build(width, height, Sprite.createLightData(0, 0));
+		base = n1.build(width, height, type);
+		hover = n2.build(width, height, type);
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class Button extends UIObject {
 		visible = true;
 		this.action = action;
 
-		hitbox = new Hitbox(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
+		hitbox = new Hitbox_KS(new int[][]{{x, y}, {x + width, y}, {x + width, y + height}, {x, y + height}});
 		
 		this.x = x;
 		this.y = y;
@@ -162,6 +162,12 @@ public class Button extends UIObject {
 	 */
 	public void doClick() {
 		action.onClick(this);
+	}
+	
+	
+	@Override
+	public void renderDevMode(DrawGraphics g) {
+		this.hitbox.renderStill(g);
 	}
 
 //	public class Back extends Button {

@@ -30,6 +30,15 @@ public class InterfaceManager {
 			list.get(i).render(g);
 		}
 	}
+	
+	/**
+	 * renders all ui objects in developer mode
+	 */
+	public void renderDevMode(DrawGraphics g) {
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).renderDevMode(g);
+		}
+	}
 
 	/**
 	 * updates all active UI components and cleans up inactive ones

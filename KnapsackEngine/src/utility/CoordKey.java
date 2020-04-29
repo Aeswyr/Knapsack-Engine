@@ -1,5 +1,7 @@
 package utility;
 
+import java.io.Serializable;
+
 /**
  * A value intended for use as a key in various data storage types which
  * calculates both hashcodes and equality based on a set x, y or x, y z
@@ -8,7 +10,11 @@ package utility;
  * @author Pascal
  *
  */
-public class CoordKey {
+public class CoordKey implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7898704859993420154L;
 	int x, y, z;
 
 	/**
@@ -39,24 +45,24 @@ public class CoordKey {
 
 	/**
 	 * @returns the hashcode of this CoordKey
-	 *          
-	 * @Override
 	 */
+	@Override
 	public int hashCode() {
 		int hash = 0;
 		hash = (x >> 8) ^ y + (y >> 8) ^ z + (z >> 8) ^ x;
 		hash = (hash | 0x00005875) ^ (x + y + z);
 		hash = (hash >> 8) ^ hash * 1000111627;
-		return hash;
+		return hash & 0x7fffffff;
 	}
 
 	/**
 	 * calculates equality between this CoordKey and another object. If the second
 	 * object is also a coordkey, uses it's x, y and z coordinates instead of its
 	 * object value
+	 * 
 	 * @returns true if equal, false otherwise
-	 * @Override
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof CoordKey) {
 			CoordKey c = (CoordKey) obj;
@@ -64,8 +70,8 @@ public class CoordKey {
 		}
 		return super.equals(obj);
 	}
-	
-	public void update(int x, int y, int z ) {
+
+	public void update(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

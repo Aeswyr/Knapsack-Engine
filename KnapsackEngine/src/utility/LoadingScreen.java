@@ -4,6 +4,7 @@ import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import runtime.Handler;
+import runtime.Light;
 import runtime.Scene;
 
 /**
@@ -30,9 +31,9 @@ public class LoadingScreen extends Scene{
 		displayText = "";
 		Handler.setFPSCap(false);
 		
-		back = new Rect(Handler.getWidth(), Handler.getHeight(), 0xff333333, Sprite.createLightData(0, 0));
-		bar = new Rect(300, 20, 0xff000000, Sprite.createLightData(0, 0));
-		load = new Rect(1, 16, 0xff990000, Sprite.createLightData(0, 0));
+		back = new Rect(Handler.getWidth(), Handler.getHeight(), 0xff333333, Sprite.createLightData(100000, Light.IGNORE));
+		bar = new Rect(300, 20, 0xff000000, Sprite.createLightData(100000, Light.IGNORE));
+		load = new Rect(1, 16, 0xff990000, Sprite.createLightData(100000, Light.IGNORE));
 		
 		Handler.setLoadingScreen(this);
 	}
@@ -83,6 +84,18 @@ public class LoadingScreen extends Scene{
 
 	@Override
 	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void start() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stop() {
 		// TODO Auto-generated method stub
 		
 	}

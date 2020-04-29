@@ -37,36 +37,36 @@ public class NineSlice {
 	public Sprite build(int width, int height, int priority) {
 		int[] raster = new int[width * height];
 
-		for (int y = 0; y < height; y++)
+		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 
 				if (y < h) {
 					if (x < w) {
-						raster[y * width + x] = s[(y % h) * w + (x % w)];
+						raster[y * width + x] = s[(y % h) * w * 3 + (x % w)];
 					} else if (x < width - w) {
-						raster[y * width + x] = s[(y % h) * w + (x % w + w * 2)];
+						raster[y * width + x] = s[(y % h) * w * 3 + (x % w + w)];
 					} else {
-						raster[y * width + x] = s[(y % h) * w + (x % w + w)];
+						raster[y * width + x] = s[(y % h) * w * 3 + (x % w + w * 2)];
 					}
 				} else if (y < height - h) {
 					if (x < w) {
-						raster[y * width + x] = s[(y % h + 2 * h) * w + (x % w)];
+						raster[y * width + x] = s[(y % h + h) * w * 3 + (x % w)];
 					} else if (x < width - w) {
-						raster[y * width + x] = s[(y % h + 2 * h) * w + (x % w + w * 2)];
+						raster[y * width + x] = s[(y % h + h) * w * 3 + (x % w + w)];
 					} else {
-						raster[y * width + x] = s[(y % h + 2 * h) * w + (x % w + w)];
+						raster[y * width + x] = s[(y % h + h) * w * 3 + (x % w + w * 2)];
 					}
 				} else {
 					if (x < w) {
-						raster[y * width + x] = s[(y % h + h) * w + (x % w)];
+						raster[y * width + x] = s[(y % h + 2 * h) * w * 3 + (x % w)];
 					} else if (x < width - w) {
-						raster[y * width + x] = s[(y % h + h) * w + (x % w + w * 2)];
+						raster[y * width + x] = s[(y % h + 2 * h) * w * 3 + (x % w + w)];
 					} else {
-						raster[y * width + x] = s[(y % h + h) * w + (x % w + w)];
+						raster[y * width + x] = s[(y % h + 2 * h) * w * 3 + (x % w + w * 2)];
 					}
 				}
-
 			}
+		}
 
 		return new Sprite(width, height, raster, priority);
 	}

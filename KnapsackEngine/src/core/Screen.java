@@ -7,11 +7,15 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 import sfx.Sound;
+import utility.Event;
 
 /**
  * Contains the information for the game window
+ * 
  * @author Pascal
  *
  */
@@ -30,7 +34,7 @@ public class Screen extends Canvas {
 	 * -1, -1 will set up true fullscreen, while 0, 0 will set up a limited
 	 * fullscreen
 	 * 
-	 * @param width - desired width
+	 * @param width  - desired width
 	 * @param height - desired height
 	 */
 	public Screen(int width, int height, String title) {
@@ -84,6 +88,8 @@ public class Screen extends Canvas {
 
 		frame.setVisible(true);
 		System.out.println(d.width + ", " + d.height);
+		
+		closingEvents = new ArrayList<Event>();
 	}
 
 	/**
@@ -107,6 +113,8 @@ public class Screen extends Canvas {
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 
+	ArrayList<Event> closingEvents;
+
 	/**
 	 * sets up closing events
 	 * 
@@ -119,14 +127,20 @@ public class Screen extends Canvas {
 		{
 			public void windowClosing(WindowEvent we) {
 				d.stop();
+				for (Event e : closingEvents)
+					e.event();
 				r.stop();
 				try {
 					Sound.shutdown();
 				} catch (NullPointerException e) {
 					e.printStackTrace();
-				}	
+				}
 				System.out.println("Game Closed");
 			}
 		});
+	}
+
+	public void addClosingEvent(Event e) {
+		closingEvents.add(e);
 	}
 }

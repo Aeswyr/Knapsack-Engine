@@ -7,11 +7,11 @@ import networking.Client;
 
 public class Processing {
 
-	static Queue<byte[]> commandBuffer;
+	public static Queue<byte[]> commandBuffer;
 
 	static Client c;
 	static Processor p;
-	
+
 	public static void InitClient(Processor commandProcessor) {
 		commandBuffer = new LinkedBlockingQueue<byte[]>();
 		p = commandProcessor;
@@ -28,8 +28,10 @@ public class Processing {
 	int log = 0;
 
 	public static void update() {
-		byte[] temp = c.readTCP();
-		p.Process(commandBuffer, temp);
+		if (c != null) {
+			byte[] temp = c.readTCP();
+			p.Process(commandBuffer, temp);
+		}
 	}
 
 }

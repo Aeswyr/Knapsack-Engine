@@ -26,6 +26,12 @@ public class UICollection extends UIObject {
 			objects.get(i).update();
 	}
 	
+	@Override
+	public void renderDevMode(DrawGraphics g) {
+		for (int i = 0; i < objects.size(); i++)
+			objects.get(i).renderDevMode(g);
+	}
+	
 	/**
 	 * adds a UIObject to the collection
 	 * @param o

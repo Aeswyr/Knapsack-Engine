@@ -86,5 +86,12 @@ public class TextBox extends UIObject {
 	public void rush() {
 		if (count > 1) count = 1;
 	}
+	
+	/**
+	 * sets the sound to play while this text box runs
+	 */
+	public void setTextSound(Sound s) {
+		textsound = s;
+	}
 
 }

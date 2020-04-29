@@ -1,13 +1,14 @@
 package runtime;
 
 import core.Driver;
+
 import core.Screen;
 import entity.EntityManager;
-import entity.Vector;
 import gfx.DrawGraphics;
 import gui.InterfaceManager;
-import gui.UIObject;
 import input.Controller;
+import map.WorldMap_KS;
+import networking.Processing;
 import particle.ParticleManager;
 import utility.LoadingScreen;
 
@@ -36,6 +37,8 @@ public class Handler {
 
 	private static LoadingScreen loadingScreen;
 
+	private static WorldMap_KS world;
+
 	/**
 	 * initialies the driver and all its components
 	 * 
@@ -56,6 +59,15 @@ public class Handler {
 
 	public static void update() {
 		Controller.update();
+		Processing.update();
+		lightManager.update();
+		uiManager.update();
+		particles.update();
+		entities.update();
+		camera.update();
+		if (world != null)
+			world.update();
+
 		if (activeScene != null)
 			activeScene.update();
 	}
@@ -70,7 +82,17 @@ public class Handler {
 			loadingScreen.render(g);
 		else if (activeScene != null)
 			activeScene.render(g);
-
+		if (world != null)
+			world.render(g);
+		lightManager.render(g);
+		uiManager.render(g);
+		particles.render(g);
+		entities.render(g);
+		if (devMode) {
+			entities.renderDevMode(g);
+			uiManager.renderDevMode(g);
+			particles.renderDevMode(g);
+		}
 	}
 
 	// Getters and Setters
@@ -86,14 +108,14 @@ public class Handler {
 	 * @returns the width of the game square (not the screen width)
 	 */
 	public static int getWidth() {
-		return 960;
+		return (int) Math.ceil(driver.getWidth() / Driver.xScale);
 	}
 
 	/**
 	 * @returns the height of the game square (not the screen height)
 	 */
 	public static int getHeight() {
-		return 540;
+		return (int) Math.ceil(driver.getHeight() / Driver.yScale);
 	}
 
 	/**
@@ -162,7 +184,11 @@ public class Handler {
 	 * @param scene - the new scene
 	 */
 	public static void setScene(Scene scene) {
+		if (activeScene != null)
+			activeScene.stop();
+		scene.start();
 		activeScene = scene;
+
 	}
 
 	/**
@@ -173,6 +199,8 @@ public class Handler {
 	 */
 	public static void startScene(Scene scene, String data) {
 		scene.init(data);
+		if (activeScene != null)
+			activeScene.stop();
 		activeScene = scene;
 	}
 
@@ -183,10 +211,20 @@ public class Handler {
 	 */
 	public static void startScene(Scene scene) {
 		scene.init(null);
+		if (activeScene != null)
+			activeScene.stop();
 		activeScene = scene;
 	}
 
 	public static EntityManager getEntityManager() {
 		return entities;
+	}
+
+	public static WorldMap_KS getLoadedWorld() {
+		return world;
+	}
+	
+	public static void setLoadedWorld(WorldMap_KS w) {
+		world = w;
 	}
 }

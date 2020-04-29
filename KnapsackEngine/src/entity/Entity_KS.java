@@ -11,35 +11,36 @@ import utility.CoordKey;
  * @author Pascal
  *
  */
-public abstract class Entity implements Serializable {
+public abstract class Entity_KS implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5462530084929665736L;
-	public int id;
-	protected double x, y;
-	protected Hitbox hitbox;
-	protected Vector vector;
-	private boolean mobEnabled, vectorEnabled, hitboxEnabled, rigidbodyEnabled;
+	protected int x, y;
+	protected Hitbox_KS hitbox;
+	protected Vector_KS vector;
+	private boolean mobEnabled;
 	protected CoordKey key;
-	
-	
-	public Entity() {
-		key = new CoordKey((int)x, (int)y, 0);
+	protected short ID;
+
+	public Entity_KS() {
+		key = new CoordKey(x, y, 0);
 	}
 
 	/**
 	 * updates all essential functions of this entity
 	 */
 	public abstract void update();
-	
+
 	public void tick() {
-		if (vectorEnabled || rigidbodyEnabled) {
+		if (hasVector() /* || rigidbodyEnabled */) { // TODO rigidbodies
 			vector.update();
-			key.update((int)x, (int)y, 0);
 		}
-		if (hitboxEnabled) hitbox.update();
-		update();
+
+		if (hasHitbox())
+			hitbox.update();
+
+		key.update(x / Hitbox_KS.BOXCHECK, y / Hitbox_KS.BOXCHECK, 0);
 	}
 
 	/**
@@ -49,6 +50,11 @@ public abstract class Entity implements Serializable {
 	 */
 	public abstract void render(DrawGraphics g);
 
+	/**
+	 * commands to complete upon deserialization
+	 */
+	public abstract void load();
+
 	// Getters and setters;
 
 	/**
@@ -56,7 +62,7 @@ public abstract class Entity implements Serializable {
 	 * 
 	 * @returns this entity's main hitbox
 	 */
-	public Hitbox getHitbox() {
+	public Hitbox_KS getHitbox() {
 		return hitbox;
 	}
 
@@ -64,14 +70,14 @@ public abstract class Entity implements Serializable {
 	 * @returns this entity's x position
 	 */
 	public int getX() {
-		return (int) x;
+		return x;
 	}
 
 	/**
 	 * @returns this entity's y position
 	 */
 	public int getY() {
-		return (int) y;
+		return y;
 	}
 
 	/**
@@ -91,21 +97,25 @@ public abstract class Entity implements Serializable {
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 	public boolean isMob() {
 		return mobEnabled;
 	}
-	
+
+	public void enableMob() {
+		this.mobEnabled = true;
+	}
+
 	public boolean hasHitbox() {
-		return hitboxEnabled;
+		return hitbox != null;
 	}
-	
+
 	public boolean hasVector() {
-		return vectorEnabled;
+		return vector != null;
 	}
-	
-	public Vector getVector() {
+
+	public Vector_KS getVector() {
 		return vector;
 	}
-	
+
 }

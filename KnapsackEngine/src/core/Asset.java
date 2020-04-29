@@ -21,7 +21,7 @@ import utility.Loader;
  * @author Pascal
  *
  */
-public class Assets {
+public class Asset {
 
 	static String path;
 

@@ -19,19 +19,19 @@ import runtime.Handler;
 
 public class EntityManager {
 
-	private ArrayList<Entity> entities;
-	private ArrayList<Entity> remove;
-	private ArrayList<Entity> mobs;
-	private HashTable<CoordKey, Entity> proximityHash;
+	private ArrayList<Entity_KS> entities;
+	private ArrayList<Entity_KS> remove;
+	private ArrayList<Entity_KS> mobs;
+	private HashTable<CoordKey, Entity_KS> proximityHash;
 
 	/**
 	 * Initializes an entityManager which handles rendering and updating entities
 	 */
 	public EntityManager() {
-		entities = new ArrayList<Entity>();
-		remove = new ArrayList<Entity>();
-		mobs = new ArrayList<Entity>();
-		proximityHash = new HashTable<CoordKey, Entity>();
+		entities = new ArrayList<Entity_KS>();
+		remove = new ArrayList<Entity_KS>();
+		mobs = new ArrayList<Entity_KS>();
+		proximityHash = new HashTable<CoordKey, Entity_KS>(100, 0.7);
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class EntityManager {
 	 * 
 	 */
 	public void renderDevMode(DrawGraphics g) {
-		Entity e;
+		Entity_KS e;
 		for (int i = entities.size() - 1; i >= 0; i--) {
 			e = entities.get(i);
 			if (e.hasHitbox())
@@ -65,14 +65,20 @@ public class EntityManager {
 	 */
 	public void update() {
 		proximityHash.clear();
-
 		for (int i = 0; i < entities.size(); i++) {
-			Entity e = entities.get(i);
-			e.update();
-			proximityHash.add(new CoordKey(e.getX() / Hitbox.BOXCHECK, e.getY() / Hitbox.BOXCHECK), e);
+			Entity_KS e = entities.get(i);
+			proximityHash.add(e.key, e);
 		}
 
-		for (Entity e : remove)
+		for (int i = 0; i < entities.size(); i++) {
+			Entity_KS e = entities.get(i);
+			e.tick();
+			e.update();
+			
+
+		}
+
+		for (Entity_KS e : remove)
 			entities.remove(e);
 		remove.clear();
 	}
@@ -84,7 +90,7 @@ public class EntityManager {
 	 * 
 	 * @param e - the entity to be added to the list
 	 */
-	public void addEntity(Entity e) {
+	public void addEntity(Entity_KS e) {
 		entities.add(e);
 		if (e.isMob())
 			mobs.add(e);
@@ -96,8 +102,21 @@ public class EntityManager {
 	 * @param index - the index of the entity to return
 	 * @return the entity at the specified index
 	 */
-	public Entity getEntity(int index) {
+	public Entity_KS getEntity(int index) {
 		return entities.get(index);
+	}
+
+	/**
+	 * Gets the entity which possesses the input ID
+	 * 
+	 * @param id - id of the entity desired
+	 * @returns the entity possessing the input id or null if none is found
+	 */
+	public Entity_KS getEntityID(int id) {
+		for (int i = 0; i < entities.size(); i++)
+			if (entities.get(i).ID == id)
+				return entities.get(i);
+		return null;
 	}
 
 	/**
@@ -106,7 +125,7 @@ public class EntityManager {
 	 * @param index - the index of the mob to return
 	 * @return the mob at the specified index
 	 */
-	public Entity getMob(int index) {
+	public Entity_KS getMob(int index) {
 		return mobs.get(index);
 	}
 
@@ -133,7 +152,7 @@ public class EntityManager {
 	 * 
 	 * @param index - the entity to be removed
 	 */
-	public void removeEntity(Entity e) {
+	public void removeEntity(Entity_KS e) {
 		remove.add(e);
 		if (e.isMob())
 			mobs.remove(e);
@@ -207,7 +226,7 @@ public class EntityManager {
 			File f = new File(path);
 			FileInputStream fo = new FileInputStream(f);
 			ObjectInputStream stream = new ObjectInputStream(fo);
-			entities = (ArrayList<Entity>) stream.readObject();
+			entities = (ArrayList<Entity_KS>) stream.readObject();
 			stream.close();
 			fo.close();
 		} catch (FileNotFoundException e) {
@@ -222,10 +241,10 @@ public class EntityManager {
 		}
 		ls.increment(1);
 
-		for (Entity e : entities) {
-			// e.load(h);
-			// if (e instanceof Mob)
-			// mobs.add((Mob) e);
+		for (Entity_KS e : entities) {
+			 e.load();
+			 if (e.isMob())
+			 mobs.add(e);
 		}
 		ls.increment(1);
 		ls.close();
@@ -234,37 +253,39 @@ public class EntityManager {
 	/**
 	 * @returns a list of all active entities
 	 */
-	public ArrayList<Entity> getEntities() {
+	public ArrayList<Entity_KS> getEntities() {
 		return entities;
 	}
 
 	/**
 	 * @returns a list of all active mobs
 	 */
-	public ArrayList<Entity> getMobs() {
+	public ArrayList<Entity_KS> getMobs() {
 		return mobs;
 	}
-	
+
 	/**
-	 * @returns a list of entities within the same hash bucket 
+	 * @returns a list of entities within the same hash bucket
 	 */
-	public List<Entity> getProximityEntities(int x, int y) {
-		ArrayList<Entity> get = new ArrayList<Entity>();
-		get.addAll(proximityHash.getBucket(new CoordKey(x, y, 1)));
+	public List<Entity_KS> getProximityEntities(int x, int y) {
+		ArrayList<Entity_KS> get = new ArrayList<Entity_KS>();
+		get.addAll(proximityHash.getBucket(new CoordKey(x / Hitbox_KS.BOXCHECK, y / Hitbox_KS.BOXCHECK)));
 		return get;
-		
+
 	}
-	
+
 	/**
-	 * @returns a list of entities within the same hash bucket and in buckets out to a radius
+	 * @returns a list of entities within the same hash bucket and in buckets out to
+	 *          a radius
 	 */
-	public List<Entity> getProximityEntities(int x, int y, int rad) {
-		ArrayList<Entity> get = new ArrayList<Entity>();
-		for (int i = -rad/2; i < rad/2; i++) {
-			for (int j = -rad/2; j < rad/2; j++) {
-				get.addAll(proximityHash.getBucket(new CoordKey(x + i, y + j, 1)));
+	public List<Entity_KS> getProximityEntities(int x, int y, int rad) {
+		ArrayList<Entity_KS> get = new ArrayList<Entity_KS>();
+		for (int i = -rad / 2; i < rad / 2; i++) {
+			for (int j = -rad / 2; j < rad / 2; j++) {
+				get.addAll(proximityHash.getBucket(new CoordKey(x / Hitbox_KS.BOXCHECK + i, y / Hitbox_KS.BOXCHECK + j)));
 			}
 		}
+
 		return get;
 	}
 

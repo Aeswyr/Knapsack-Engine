@@ -40,6 +40,12 @@ public class ParticleManager {
 		}
 	}
 	
+	public void renderDevMode(DrawGraphics g) {
+		for (int i = 0; i < particles.size(); i++) {
+			particles.get(i).renderDevMode(g);
+		}
+	}
+	
 	/**
 	 * adds a new particle to the active particles list
 	 * @param p - the particle to add to the list
